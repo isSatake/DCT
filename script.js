@@ -24,15 +24,22 @@ function DCT(n){
   for (var i = 0; i < this.N; i++) {
     this.ph1[i] = this.ph(i);
   }
-  this.ph1Matrix = math.matrix(this.ph1)
-  console.log(this.ph1Matrix)
+  this.ph1Matrix = math.matrix(this.ph1) //確実にOK
 
   this.ph2Matrix = math.matrix(math.zeros([this.N, this.N, this.N, this.N]))
   for(var i = 0; i < this.N; i++){
     for(var j = 0; j < this.N; j++){
       var m = meshgrid(this.N, this.ph1Matrix._data[i], this.ph1Matrix._data[j]) //確実にうまくいってる
+      console.log(m)
       this.ph2Matrix._data[i][j] = math.multiply(m[0], m[1])//列がすべてph1Matrix[i]の行列 * 行がすべてph1Matrix[j]の行列
-      //怪しいが先に進む
+      //おかしい、、、
+      //meshgridがダメなのか、math.multiplyがダメなのかわからん
+      console.log(math.multiply(m[0]._data[0][0], m[1]._data[0][0]))
+    }
+  }
+  for(var i = 0; i < this.N; i++){
+    for(var j = 0; j < this.N; j++){
+      console.log("M" + i + ", " + j + ": " + this.ph2Matrix._data[i][j])
     }
   }
 }
@@ -82,9 +89,9 @@ DCT.prototype.dct2 = function(data) {
 
 DCT.prototype.idct2 = function(dataMatrix) {
   //np.sum((c.reshape(N,N,1)*self.phi_2d.reshape(N,N,N*N)).reshape(N*N,N*N),axis=0).reshape(N,N)
-  //DCTされたデータ(引数)をN,N,1にreshapeしたものと2次元基底行列をN,N,N*Nにreshapeしたものをかけて、それをNN,NNにreshapeして、
+  //DCTされたデータ(引数,8*8)をN,N,1にreshapeしたものと2次元基底行列をN,N,N*Nにreshapeしたものをかけて、それをNN,NNにreshapeして、
   //sumしたものをN,Nにreshape
-  return math.multiply(math.matrix(data), this.ph1Matrix)
+
 }
 
 // returns 変換行列
@@ -92,11 +99,11 @@ DCT.prototype.ph = function(k) {
   var kph = []
   if (k == 0) {
     for (var i = 0; i < this.N; i++) {
-      kph[i] = 1 / Math.sqrt(this.N);
+      kph[i] = (1 / Math.sqrt(this.N))
     }
   } else {
     for (var i = 0; i < this.N; i++) {
-      kph[i] = Math.sqrt(2 / this.N) * Math.cos(((2 * i + 1) * k * Math.PI) / (2 * this.N));
+      kph[i] = (Math.sqrt(2 / this.N) * Math.cos(((2 * i + 1) * k * Math.PI) / (2 * this.N)))
     }
   }
   return kph;
@@ -123,11 +130,12 @@ var randomOctetImage = []
 for(var i = 0; i < N; i++){
   randomOctetImage[i] = []
   for(var j = 0; j < N; j++){
-    randomOctetImage[i][j] = Math.random() * 256
+    randomOctetImage[i][j] = (Math.random() * 256)
   }
 }
 
-dct.dct2(randomOctetImage)
+var d2 = dct.dct2(randomOctetImage)
+console.log(d2)
 
 // var d = dct.dct(r)
 // var id = dct.idct(d)
@@ -148,13 +156,14 @@ function toText(array) {
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var width = imageData.width, height = imageData.height;
 var pixels = imageData.data;  // ピクセル配列：RGBA4要素で1ピクセル
-
+// console.log(dct.ph2Matrix._data[7][7]._data[])
 for (var y = 0; y < randomOctetImage.length; ++y) {
   for (var x = 0; x < randomOctetImage.length; ++x) {
     var base = (y * width + x) * 4;
-    pixels[base + 0] = randomOctetImage[y][x];  // Red
-    pixels[base + 1] = randomOctetImage[y][x];  // Green
-    pixels[base + 2] = randomOctetImage[y][x];  // Blue
+    var brightness = dct.ph2Matrix._data[3][4]._data[y][x]
+    pixels[base + 0] = brightness;  // Red
+    pixels[base + 1] = brightness;  // Green
+    pixels[base + 2] = brightness;  // Blue
     pixels[base + 3] = 255;  // Alpha
   }
 }
