@@ -35,38 +35,20 @@ function DCT(n){
   for (var i = 0; i < this.N; i++) {
     this.ph1[i] = this.ph(i);
   }
-  console.log(this.ph1);
+
+  this.phMatrix = math.matrix(this.ph1)
 }
 
+//returns matrix
 DCT.prototype.dct = function(data) {
-  var d = []
-  for (var i = 0; i < this.N; i++) {
-    d[i] = []
-    for (var j = 0; j < this.N; j++) {
-      d[i][j] = data[i] * this.ph1[i][j];
-    }
-  }
-  return d
-  // return math.multiply(data, this.ph1)
+  return math.multiply(math.matrix(data), this.phMatrix)
 }
 
-DCT.prototype.idct = function(data){
+//returns matrix
+DCT.prototype.idct = function(dataMatrix){
   var d = []
-  var m = []
-  var ph1t = math.transpose(math.matrix(this.ph1))
-
-  for (var i = 0; i < this.N; i++) {
-    m[i] = []
-    for (var j = 0; j < this.N; j++) {
-      m[i][j] = data[i][j] * ph1t._data[i][j]
-    }
-  }
-
-  //変換行列の転置行列とdataをかけて、行ごとの和を返す
-  // var ph1t = math.transpose(math.matrix(this.ph1))
-  // var m = math.multiply(data, ph1t)
   for(var i = 0; i < this.N; i++){
-    d[i] = math.sum(m[i])
+    d[i] = math.sum(math.multiply(dataMatrix, math.transpose(this.phMatrix))._data[i])
   }
   return d
 }
