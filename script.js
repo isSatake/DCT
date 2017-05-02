@@ -51,6 +51,42 @@ DCT.prototype.idct = function(dataMatrix){
   return d
 }
 
+// returns matrix
+DCT.prototype.dct2 = function(data) {
+  //ph2Matrixを64*64行列にしたやつ*dataを1次元配列にしたやつの、行ごとの合計を8*8行列にする
+  //ph2Matrixを64*64行列にしたやつ -> OK
+  var tmp = []
+  for(var i = 0; i < (this.N * this.N); i++){
+    var catRow = []
+    for(var j = 0; j < this.N; j++){
+      catRow = catRow.concat(this.ph2Matrix._data[Math.floor(i / 8)][j]._data[Math.floor(i / 8)])
+      tmp[i] = catRow
+    }
+  }
+  var reshapedPh2Matrix = math.matrix(tmp)
+
+  //dataを1次元配列にしたやつ -> OK
+  var reshapedData = []
+  for (var i = 0; i < this.N; i++) {
+    reshapedData = reshapedData.concat(data[i])
+  }
+
+  //かけた -> OK
+  var m = math.multiply(reshapedPh2Matrix, math.matrix(reshapedData))
+
+  //行列に戻す
+  var dct2Array = []
+  while(m._data.length) dct2Array.push(m._data.splice(0, this.N))
+  return math.matrix(dct2Array)
+}
+
+DCT.prototype.idct2 = function(dataMatrix) {
+  //np.sum((c.reshape(N,N,1)*self.phi_2d.reshape(N,N,N*N)).reshape(N*N,N*N),axis=0).reshape(N,N)
+  //DCTされたデータ(引数)をN,N,1にreshapeしたものと2次元基底行列をN,N,N*Nにreshapeしたものをかけて、それをNN,NNにreshapeして、
+  //sumしたものをN,Nにreshape
+  return math.multiply(math.matrix(data), this.ph1Matrix)
+}
+
 // returns 変換行列
 DCT.prototype.ph = function(k) {
   var kph = []
@@ -90,6 +126,8 @@ for(var i = 0; i < N; i++){
     randomOctetImage[i][j] = Math.random() * 256
   }
 }
+
+dct.dct2(randomOctetImage)
 
 // var d = dct.dct(r)
 // var id = dct.idct(d)
