@@ -17,6 +17,11 @@ var ctx = canvas.getContext('2d')
 // 				self.phi_2d[i,j] = phi_i*phi_j //phi_i*phi_jの行列を8*8行列に突っ込む
 
 
+
+//いわゆる普通の行列の積を求めているのはdct()だけ...
+//glMatrixというライブラリが使えそう
+//普通に公式とシグマの使い方を勉強して、for文に落とlし込んでみたい(17:51)
+
 // DCT Class
 function DCT(n){
   this.N = n
@@ -46,7 +51,7 @@ function DCT(n){
 
 // returns DCT matrix
 DCT.prototype.dct = function(data) {
-  return math.multiply(math.matrix(data), this.ph1Matrix)
+  return math.multiply(math.matrix(data), this.ph1Matrix) //OK
 }
 
 // returns matrix
