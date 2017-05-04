@@ -66,7 +66,7 @@ DCT.prototype.idct = function(dataMatrix){
 // returns matrix
 DCT.prototype.dct2 = function(data) {
   //基底行列 * 8*8ピクセルデータ * 基底の転置行列
-  var m = math.multiply(this.ph2Matrix, math.matrix(data))
+  var m = math.multiply(this.ph2Matrix, math.matrix(data))//4次元なので計算できない
   return math.multiply(m, math.transpose(this.ph2Matrix))
 
 
