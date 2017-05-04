@@ -123,7 +123,7 @@ DCTImage.prototype.convert4to2 = function(array4d){
 
 DCTImage.prototype.compress = function(){
   //JPEG圧縮
-  //ジグザグスキャン？
+  //ジグザグスキャン
 }
 
 var drawBitmapToCanvas = function(canvas, ctx, pixel) {
