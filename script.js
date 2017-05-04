@@ -51,6 +51,7 @@ DCT.prototype.idct = function(dataMatrix){
     d[i] = math.sum(math.multiply(dataMatrix, math.transpose(this.phMatrix))._data[i])
   }
   return d
+  // return math.multiply(dataMatrix, this.phMatrix)._data
 }
 
 DCT.prototype.ph = function(k) {
