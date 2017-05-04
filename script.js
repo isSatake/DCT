@@ -99,22 +99,26 @@ DCTImage.prototype.getJPEG2d = function(){
     }
   }
 
-  var idct2d = []
+  return this.convert4o2(idct4d)
+}
+
+DCTImage.prototype.convert4o2 = function(array4d){
+  var array2d = []
   var width2d = this.raw2d.length
-
+  
   for(var i = 0; i < width2d; i++){
-    idct2d[i] = []
+    array2d[i] = []
   }
-
+  
   for(var i = 0; i < width2d / this.N; i++){
     for(var j = 0; j < width2d / this.N; j++){
       for(var k = 0; k < this.N; k++){
-        idct2d[k + this.N * i] = idct2d[k + this.N * i].concat(idct4d[i][j][k])
+        array2d[k + this.N * i] = array2d[k + this.N * i].concat(array4d[i][j][k])
       }
     }
   }
-
-  return idct2d
+  
+  return array2d
 }
 
 DCTImage.prototype.compress = function(){
@@ -150,6 +154,8 @@ function toText(array) {
 // Initialize
 var rcanvas = document.getElementById('rawcanvas')
 var rctx = rcanvas.getContext('2d')
+var scanvas = document.getElementById('spccanvas')
+var sctx = scanvas.getContext('2d')
 var ccanvas = document.getElementById('cmpcanvas')
 var cctx = ccanvas.getContext('2d')
 
@@ -159,7 +165,9 @@ var raw2d = []
 while(raw1d.length) raw2d.push(raw1d.splice(0,160));
 
 var image = new DCTImage(N, raw2d)
+var spc = image.convert4o2(image.getSpectrum4d())
 var cmp = image.getJPEG2d()
 
 drawBitmapToCanvas(rcanvas, rctx, raw2d)
+drawBitmapToCanvas(scanvas, sctx, spc)
 drawBitmapToCanvas(ccanvas, cctx, cmp)
