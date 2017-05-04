@@ -65,31 +65,38 @@ DCT.prototype.idct = function(dataMatrix){
 
 // returns matrix
 DCT.prototype.dct2 = function(data) {
+  //基底行列 * 8*8ピクセルデータ * 基底の転置行列
+  var m = math.multiply(this.ph2Matrix, math.matrix(data))
+  return math.multiply(m, math.transpose(this.ph2Matrix))
+
+
+
+
   //ph2Matrixを64*64行列にしたやつ*dataを1次元配列にしたやつの、行ごとの合計を8*8行列にする
   //ph2Matrixを64*64行列にしたやつ -> OK
-  var tmp = []
-  for(var i = 0; i < (this.N * this.N); i++){
-    var catRow = []
-    for(var j = 0; j < this.N; j++){
-      catRow = catRow.concat(this.ph2Matrix._data[Math.floor(i / 8)][j]._data[Math.floor(i / 8)])
-      tmp[i] = catRow
-    }
-  }
-  var reshapedPh2Matrix = math.matrix(tmp)
-
-  //dataを1次元配列にしたやつ -> OK
-  var reshapedData = []
-  for (var i = 0; i < this.N; i++) {
-    reshapedData = reshapedData.concat(data[i])
-  }
-
-  //かけた -> OK
-  var m = math.multiply(reshapedPh2Matrix, math.matrix(reshapedData))
-
-  //行列に戻す
-  var dct2Array = []
-  while(m._data.length) dct2Array.push(m._data.splice(0, this.N))
-  return math.matrix(dct2Array)
+  // var tmp = []
+  // for(var i = 0; i < (this.N * this.N); i++){
+  //   var catRow = []
+  //   for(var j = 0; j < this.N; j++){
+  //     catRow = catRow.concat(this.ph2Matrix._data[Math.floor(i / 8)][j]._data[Math.floor(i / 8)])
+  //     tmp[i] = catRow
+  //   }
+  // }
+  // var reshapedPh2Matrix = math.matrix(tmp)
+  //
+  // //dataを1次元配列にしたやつ -> OK
+  // var reshapedData = []
+  // for (var i = 0; i < this.N; i++) {
+  //   reshapedData = reshapedData.concat(data[i])
+  // }
+  //
+  // //かけた -> OK
+  // var m = math.multiply(reshapedPh2Matrix, math.matrix(reshapedData))
+  //
+  // //行列に戻す
+  // var dct2Array = []
+  // while(m._data.length) dct2Array.push(m._data.splice(0, this.N))
+  // return math.matrix(dct2Array)
 }
 
 DCT.prototype.idct2 = function(dataMatrix) {
