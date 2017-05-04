@@ -1,3 +1,13 @@
+.container {
+    height:200px;
+}
+
+.canvas {
+    float: left;
+    margin-right: 20px;
+    text-align: center;
+}
+
 #rawcanvas #cmpcanvas {
-  background-color: #EEE;
+    background-color: #EEE;
 }
