@@ -83,11 +83,11 @@ DCTImage.prototype.getSpectrum4d = function(){
     }
   }
 
-  return spectrum4d
+  return this.compress(this.quantize(spectrum4d))
 }
 
 DCTImage.prototype.getJPEG2d = function(){
-  var spectrum4d = this.getSpectrum4d()
+  var spectrum4d = this.iQuantize(this.getSpectrum4d())
   var width = spectrum4d.length
   var idct4d = []
 
@@ -95,7 +95,6 @@ DCTImage.prototype.getJPEG2d = function(){
     idct4d[i] = []
     for(var j = 0; j < width; j++){
       idct4d[i][j] = this.dct.idct2(spectrum4d[i][j])
-      //this.compress(this.dct.idct2(spectrum4d[i][j]))
     }
   }
 
@@ -121,9 +120,64 @@ DCTImage.prototype.convert4to2 = function(array4d){
   return array2d
 }
 
-DCTImage.prototype.compress = function(){
-  //JPEG圧縮
-  //ジグザグスキャン
+DCTImage.prototype.quantize = function(array4d){
+  var quantized4d = []
+  var width2d = this.raw2d.length
+  
+  for(var i = 0; i < width2d / this.N; i++){
+    quantized4d[i] = []
+    for(var j = 0; j < width2d / this.N; j++){
+      quantized4d[i][j] = []
+      for(var k = 0; k < this.N; k++){
+        quantized4d[i][j][k] = []
+        for(var l = 0; l < this.N; l++) {
+          quantized4d[i][j][k][l] = Math.floor(array4d[i][j][k][l] * qTable[k][l])
+        }
+      }
+    }
+  }
+  
+  return quantized4d
+}
+
+DCTImage.prototype.compress = function(array4d){
+  var compressed4d = []
+  var width2d = this.raw2d.length
+  
+  for(var i = 0; i < width2d / this.N; i++){
+    compressed4d[i] = []
+    for(var j = 0; j < width2d / this.N; j++){
+      compressed4d[i][j] = []
+      for(var k = 0; k < this.N; k++){
+        compressed4d[i][j][k] = []
+        for(var l = 0; l < this.N; l++) {
+          compressed4d[i][j][k][l] = Math.floor(array4d[i][j][k][l] * cTable[k][l])
+        }
+      }
+    }
+  }
+  
+  return compressed4d
+}
+
+DCTImage.prototype.iQuantize = function(array4d){
+  var i4d = []
+  var width2d = this.raw2d.length
+  
+  for(var i = 0; i < width2d / this.N; i++){
+    i4d[i] = []
+    for(var j = 0; j < width2d / this.N; j++){
+      i4d[i][j] = []
+      for(var k = 0; k < this.N; k++){
+        i4d[i][j][k] = []
+        for(var l = 0; l < this.N; l++) {
+          i4d[i][j][k][l] = Math.floor(array4d[i][j][k][l] / qTable[k][l])
+        }
+      }
+    }
+  }
+  
+  return i4d
 }
 
 var drawBitmapToCanvas = function(canvas, ctx, pixel) {
