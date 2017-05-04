@@ -1,4 +1,11 @@
 /*
+ *  ██████╗  ██████╗████████╗
+ *  ██╔══██╗██╔════╝╚══██╔══╝
+ *  ██║  ██║██║        ██║
+ *  ██║  ██║██║        ██║
+ *  ██████╔╝╚██████╗   ██║
+ *  ╚═════╝  ╚═════╝   ╚═╝
+ *
  *  Author: Hiroaki Satake (81724496)
  */
 
@@ -108,11 +115,11 @@ DCTImage.prototype.getJPEG2d = function(){
 DCTImage.prototype.convert4to2 = function(array4d){
   var array2d = []
   var width2d = this.raw2d.length
-  
+
   for(var i = 0; i < width2d; i++){
     array2d[i] = []
   }
-  
+
   for(var i = 0; i < width2d / this.N; i++){
     for(var j = 0; j < width2d / this.N; j++){
       for(var k = 0; k < this.N; k++){
@@ -120,14 +127,14 @@ DCTImage.prototype.convert4to2 = function(array4d){
       }
     }
   }
-  
+
   return array2d
 }
 
 DCTImage.prototype.quantize = function(array4d){
   var quantized4d = []
   var width2d = this.raw2d.length
-  
+
   for(var i = 0; i < width2d / this.N; i++){
     quantized4d[i] = []
     for(var j = 0; j < width2d / this.N; j++){
@@ -140,14 +147,14 @@ DCTImage.prototype.quantize = function(array4d){
       }
     }
   }
-  
+
   return quantized4d
 }
 
 DCTImage.prototype.compress = function(array4d){
   var compressed4d = []
   var width2d = this.raw2d.length
-  
+
   for(var i = 0; i < width2d / this.N; i++){
     compressed4d[i] = []
     for(var j = 0; j < width2d / this.N; j++){
@@ -160,14 +167,14 @@ DCTImage.prototype.compress = function(array4d){
       }
     }
   }
-  
+
   return compressed4d
 }
 
 DCTImage.prototype.iQuantize = function(array4d){
   var i4d = []
   var width2d = this.raw2d.length
-  
+
   for(var i = 0; i < width2d / this.N; i++){
     i4d[i] = []
     for(var j = 0; j < width2d / this.N; j++){
@@ -180,7 +187,7 @@ DCTImage.prototype.iQuantize = function(array4d){
       }
     }
   }
-  
+
   return i4d
 }
 
@@ -217,7 +224,7 @@ function init(level){
   var image = new DCTImage(N, level, raw2d)
   var spc = image.convert4to2(image.getSpectrum4d())
   var cmp = image.getJPEG2d()
-  
+
   drawBitmapToCanvas(scanvas, sctx, spc)
   drawBitmapToCanvas(ccanvas, cctx, cmp)
 }
