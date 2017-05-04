@@ -41,17 +41,12 @@ function DCT(n){
 
 //returns matrix
 DCT.prototype.dct = function(data) {
-  return math.multiply(math.matrix(data), this.phMatrix)
+  return math.multiply(this.phMatrix, math.matrix(data))
 }
 
 //returns matrix
 DCT.prototype.idct = function(dataMatrix){
-  var d = []
-  for(var i = 0; i < this.N; i++){
-    d[i] = math.sum(math.multiply(dataMatrix, math.transpose(this.phMatrix))._data[i])
-  }
-  return d
-  // return math.multiply(dataMatrix, this.phMatrix)._data
+  return math.multiply(math.transpose(this.phMatrix), dataMatrix)._data
 }
 
 DCT.prototype.ph = function(k) {
