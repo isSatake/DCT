@@ -7,7 +7,6 @@
 <body>
 <h1>DCT</h1>
 <div class="container">
-    <!-- <img id="gyoza" src="./gyoza.png"> -->
     <div class="canvas">
         <span>Original</span>
         <br>
@@ -30,6 +29,7 @@
         </canvas>
     </div>
 </div>
+<input type="range" id="complevel" value="7" min="0" max="15" step="1" onchange="changeLevel()">
 <a href="./script.js">ソースコード</a>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.12.2/math.min.js"></script>

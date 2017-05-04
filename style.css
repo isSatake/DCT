@@ -11,3 +11,9 @@
 #rawcanvas #cmpcanvas {
     background-color: #EEE;
 }
+
+#complevel {
+    width: 150px;
+    display: block;
+    margin-bottom: 10px;
+}

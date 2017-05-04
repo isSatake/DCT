@@ -1,3 +1,8 @@
+/*
+ *  Author: Hiroaki Satake (81724496)
+ */
+
+
 // DCT Class
 function DCT(n){
   this.N = n
@@ -8,12 +13,10 @@ function DCT(n){
   this.ph1Matrix = math.matrix(this.ph1)
 }
 
-//returns matrix
 DCT.prototype.dct = function(data) {
   return math.multiply(this.phMatrix, math.matrix(data))
 }
 
-//returns matrix
 DCT.prototype.idct = function(data){
   return math.multiply(math.transpose(this.phMatrix), math.matrix(data))._data
 }
@@ -43,8 +46,9 @@ DCT.prototype.ph = function(k) {
 }
 
 //Image Class
-function DCTImage(n, array2d){
+function DCTImage(n, level, array2d){
   this.N = n
+  this.compLevel = level
   this.raw2d = array2d
   this.blocks4d = this.divide(this.raw2d)
   this.dct = new DCT(this.N)
@@ -151,7 +155,7 @@ DCTImage.prototype.compress = function(array4d){
       for(var k = 0; k < this.N; k++){
         compressed4d[i][j][k] = []
         for(var l = 0; l < this.N; l++) {
-          compressed4d[i][j][k][l] = Math.floor(array4d[i][j][k][l] * cTable[k][l])
+          compressed4d[i][j][k][l] = Math.floor(array4d[i][j][k][l] * cTable[this.compLevel][k][l])
         }
       }
     }
@@ -183,15 +187,15 @@ DCTImage.prototype.iQuantize = function(array4d){
 var drawBitmapToCanvas = function(canvas, ctx, pixel) {
   var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   var width = imageData.width, height = imageData.height;
-  var pixels = imageData.data;  // ピクセル配列：RGBA4要素で1ピクセル
+  var pixels = imageData.data;
   for (var y = 0; y < pixel.length; ++y) {
     for (var x = 0; x < pixel.length; ++x) {
       var base = (y * width + x) * 4;
       var brightness = pixel[y][x]
-      pixels[base + 0] = brightness;  // Red
-      pixels[base + 1] = brightness;  // Green
-      pixels[base + 2] = brightness;  // Blue
-      pixels[base + 3] = 255;  // Alpha
+      pixels[base + 0] = brightness;
+      pixels[base + 1] = brightness;
+      pixels[base + 2] = brightness;
+      pixels[base + 3] = 255;
     }
   }
   ctx.putImageData(imageData, 0, 0);
@@ -205,7 +209,19 @@ function toText(array) {
   return txt
 }
 
-// Initialize
+function changeLevel() {
+  init(document.getElementById("complevel").value)
+}
+
+function init(level){
+  var image = new DCTImage(N, level, raw2d)
+  var spc = image.convert4to2(image.getSpectrum4d())
+  var cmp = image.getJPEG2d()
+  
+  drawBitmapToCanvas(scanvas, sctx, spc)
+  drawBitmapToCanvas(ccanvas, cctx, cmp)
+}
+
 var rcanvas = document.getElementById('rawcanvas')
 var rctx = rcanvas.getContext('2d')
 var scanvas = document.getElementById('spccanvas')
@@ -218,10 +234,5 @@ var N = 8
 var raw2d = []
 while(raw1d.length) raw2d.push(raw1d.splice(0,160));
 
-var image = new DCTImage(N, raw2d)
-var spc = image.convert4to2(image.getSpectrum4d())
-var cmp = image.getJPEG2d()
-
 drawBitmapToCanvas(rcanvas, rctx, raw2d)
-drawBitmapToCanvas(scanvas, sctx, spc)
-drawBitmapToCanvas(ccanvas, cctx, cmp)
+init(7)
