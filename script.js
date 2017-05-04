@@ -99,10 +99,10 @@ DCTImage.prototype.getJPEG2d = function(){
     }
   }
 
-  return this.convert4o2(idct4d)
+  return this.convert4to2(idct4d)
 }
 
-DCTImage.prototype.convert4o2 = function(array4d){
+DCTImage.prototype.convert4to2 = function(array4d){
   var array2d = []
   var width2d = this.raw2d.length
   
@@ -165,7 +165,7 @@ var raw2d = []
 while(raw1d.length) raw2d.push(raw1d.splice(0,160));
 
 var image = new DCTImage(N, raw2d)
-var spc = image.convert4o2(image.getSpectrum4d())
+var spc = image.convert4to2(image.getSpectrum4d())
 var cmp = image.getJPEG2d()
 
 drawBitmapToCanvas(rcanvas, rctx, raw2d)
