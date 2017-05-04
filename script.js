@@ -8,16 +8,14 @@ function DCT(n){
   this.ph1Matrix = math.matrix(this.ph1)
 }
 
+//returns matrix
 DCT.prototype.dct = function(data) {
-  return math.multiply(math.matrix(data), this.ph1Matrix)
+  return math.multiply(this.phMatrix, math.matrix(data))
 }
 
+//returns matrix
 DCT.prototype.idct = function(data){
-  var d = []
-  for(var i = 0; i < this.N; i++){
-    d[i] = math.sum(math.multiply(math.matrix(data), math.transpose(this.ph1Matrix))._data[i])
-  }
-  return d
+  return math.multiply(math.transpose(this.phMatrix), math.matrix(data))._data
 }
 
 DCT.prototype.dct2 = function(data) {
