@@ -121,6 +121,7 @@ DCTImage.prototype.getJPEG2d = function(){
 
 DCTImage.prototype.compress = function(){
   //JPEG圧縮
+  //ジグザグスキャン？
 }
 
 var drawBitmapToCanvas = function(canvas, ctx, pixel) {
@@ -153,46 +154,14 @@ var rcanvas = document.getElementById('rawcanvas')
 var rctx = rcanvas.getContext('2d')
 var ccanvas = document.getElementById('cmpcanvas')
 var cctx = ccanvas.getContext('2d')
+
 var N = 8
-var dct = new DCT(N)
-var raw = [] //16*16px
 
-// for(var i = 0; i < 640; i++){
-//   raw[i] = []
-//   for(var j = 0; j < 640; j++){
-//     raw[i][j] = (Math.random() * 256)
-//   }
-// }
-//
-// var image = new DCTImage(N, raw)
-// var cmp = DCTImage.getJPEG2d()
-//
-// drawBitmapToCanvas(rcanvas, rctx, raw)
-// drawBitmapToCanvas(ccanvas, cctx, cmp)
+var raw2d = []
+while(raw1d.length) raw2d.push(raw1d.splice(0,160));
 
-var img = new Image();
-img.src = "./gyoza.png"
-/* 画像が読み込まれるのを待ってから処理を続行 */
-img.onload = function() {
-  rctx.drawImage(img, 0, 0);
-  console.log(rctx.getImageData(0, 0, rcanvas.width, rcanvas.height))
-}
-
-var raw = []
-var imageData = rctx.getImageData(0, 0, rcanvas.width, rcanvas.height);
-var width = imageData.width, height = imageData.height;
-console.log(imageData)
-var pixels = imageData.data;  // ピクセル配列：RGBA4要素で1ピクセル
-for (var y = 0; y < width; ++y) {
-  raw[y] = []
-  for (var x = 0; x < width; ++x) {
-    var base = (y * width + x) * 4;
-    raw[y].push(pixels[base + 0])
-  }
-}
-console.log(raw)
-
-var image = new DCTImage(N, raw)
+var image = new DCTImage(N, raw2d)
 var cmp = image.getJPEG2d()
 
+drawBitmapToCanvas(rcanvas, rctx, raw2d)
 drawBitmapToCanvas(ccanvas, cctx, cmp)
